@@ -14,8 +14,11 @@ jQuery(function($) {
 	$.smartSearch = function(o) {
 		
 		o = $.extend({
-			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]'
+			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]',
+			excludeHosts: /^.*facebook.com$/
 		}, o);
+		
+		if (location.host.match(o.excludeHosts)) return this;
 		
 		// mark fields when they get focus so we can check when not to search
 		// escape key: blur any focused input
