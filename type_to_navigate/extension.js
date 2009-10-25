@@ -58,7 +58,7 @@ jQuery(function($) {
 				
 					var s = window.getSelection();
 					var el = $(s.anchorNode.parentElement);
-					if ( el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
+					if ( el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
 						location.href = el.attr('href');
 					return;
 				
