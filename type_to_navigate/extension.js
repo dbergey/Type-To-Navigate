@@ -11,22 +11,29 @@ jQuery(function($) {
 	var results = [];
 	var keyupTimeout;
 	
-	$.smartSearch = function() {
+	$.smartSearch = function(o) {
+		
+		o = $.extend({
+			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]'
+		}, o);
 		
 		// mark fields when they get focus so we can check when not to search
-		$(':text, :password, textarea').focus(function() { $(this).attr('smartSearch_hasFocus', true); }).blur(function() { $(this).removeAttr('smartSearch_hasFocus'); });
-		
 		// escape key: blur any focused input
-		$(':text, :password, textarea').bind('keydown', function(e) {
-			if (e.keyCode == 27) $(':text, :password, textarea').filter('[smartSearch_hasFocus]').trigger('blur');
+		$(o.excludeIfFocused).bind('keydown', function(e) {
+			if (e.keyCode == 27) $(o.excludeIfFocused).filter(function() {
+				return $(this).css('cursor') == 'text';
+			}).trigger('blur');
 		});
 		
+		// handle keypresses on page
 		$(window).bind('keypress', function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.charCode);
 			
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
-			if (e.charCode&& !$(':text, :password, textarea').filter('[smartSearch_hasFocus]').size()) {
+			if ( e.charCode && !$(o.excludeIfFocused).filter(function() {
+				return $(this).css('cursor') == 'text';
+			}).size() ) {
 				
 				if ( !e.cmdKey ) {
 				
@@ -44,73 +51,27 @@ jQuery(function($) {
 						// append char
 						window.status = searchString += e.character;
 						
-						// if it's there, we'll show in here too
-						$('#chromeStatusBar').show().text(window.status); 
-							
 						// postpone clearing
 						clearTimeout(keyupTimeout);
-
+						
 						keyupTimeout = setTimeout(function() {
 							window.status = searchString = '';
 							currentResult = 0;
-							
-							// if it's there, we'll assume we showed in there too, and hide it now
-							$('#chromeStatusBar').hide();
 						}, 1000);
-				
-						// window.find(searchString, false, false, true, false, true, true);
-					
-						// get all text nodes and search for searchString
-						results = $('body').find('*').andSelf().contents().filter(function() {
-							return (this.nodeType == Node.TEXT_NODE);
-						}).map(function() {
-							var regex = new RegExp(searchString, 'gi');
-							var matches = [];
-							while (regex.exec(this.data)) {
-								matches.push({
-									'startOffset': regex.lastIndex - searchString.length,
-									'endOffset': regex.lastIndex,
-									'node': this
-								});
-							}
-							return matches;
-						});
-						resultsCount = results.length;
+						
+						// clear selection and find again
+						window.getSelection().removeAllRanges();
+						window.find(searchString, false, false, true, false, true, true);
 					}
 				
 				} else {
 					
 					// if cmd-g go to next
 					if ($.inArray(e.character, ['g','G']) >= 0) {
-						currentResult = ((currentResult + resultsCount + (event.shiftKey ? -1 : 1)) % resultsCount);
+						window.find(searchString, false, false, true, false, true, true);
 						event.preventDefault();
 					}
 				}
-			
-				if (results.length && results[currentResult]) {
-				
-					// is there something selected?
-					var s = window.getSelection();
-					if (s.rangeCount > 0) {
-				
-						// is the selection the same as the searchString?
-						if (String(s) == searchString) {
-							if (true) return;
-						} else {
-							s.removeAllRanges();
-						}
-					}
-			
-					// select the current result
-					var range = document.createRange();
-					range.setStart(results[currentResult].node, results[currentResult].startOffset);
-					range.setEnd(results[currentResult].node, results[currentResult].endOffset);
-					s.addRange(range);
-				
-					// scroll if needed
-					results[currentResult].node.parentNode.scrollIntoViewIfNeeded();
-				}
-			
 			}
 		});
 	};

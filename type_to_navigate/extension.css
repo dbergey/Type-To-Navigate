@@ -1,0 +1,7 @@
+input:not([type]):focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+[contenteditable=true]:focus
+textarea:focus {
+	cursor: text;
+}
