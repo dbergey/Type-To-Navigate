@@ -5,6 +5,5 @@ input[type="password"]:focus,
 [contenteditable=true]:focus,
 .UIComposer_STATE_INPUT_FOCUSED [contenteditable=true], /* for facebook */
 textarea:focus {
-	outline: 3px solid red;
 	cursor: text;
 }

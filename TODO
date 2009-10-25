@@ -6,7 +6,7 @@ Old known issues (need verified in new plugin)
 ----------------------------------------------
 - adding a dvd to a netflix queue succeeds, but overlay popup reports an error.
 - finding something then hitting ctrl-g starts advancing only on 2nd try.
-- breaks on cnn.com, macnn.com, facebook's token field, facebook chat field
+- breaks on facebook's token field, facebook chat field
 
 TODO
 ----
