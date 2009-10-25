@@ -1,9 +1,3 @@
-/*
-known issues:
-- adding a dvd to a netflix queue succeeds, but overlay popup reports an error.
-- finding something then hitting ctrl-g starts advancing only on 2nd try.
-- breaks on cnn.com, macnn.com, facebook's token field, facebook chat field
-*/
 jQuery(function($) {
 	var searchString = '';
 	var keyupTimeout;
@@ -24,11 +18,26 @@ jQuery(function($) {
 			}).trigger('blur');
 		});
 		
-		// handle keypresses on page
+		// handle command-g
 		$(window).bind('keydown', function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
-			
+
+			// if cmd-g and we have go to next
+			var s = window.getSelection();
+			if ( e.character == 'G' && e.cmdKey && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() ) {
+				window.find(nextSearchString, false, e.shiftKey, true, false, true, false);
+				event.preventDefault();
+				event.stopPropagation();
+				return false;
+			}
+		});
+		
+		// handle typeable keypresses
+		$(window).bind('keypress', function(e) {
+			e.cmdKey = e.metaKey && !e.ctrlKey;
+			e.character = String.fromCharCode(e.keyCode);
+		
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
 			if ( e.keyCode && !$(o.excludeIfFocused).filter(function() {
 				return $(this).css('cursor') == 'text';
@@ -64,15 +73,6 @@ jQuery(function($) {
 						window.find(searchString, false, false, true, false, true, true);
 					}
 				
-				} else {
-					// if cmd-g go to next
-					var s = window.getSelection();
-					if ( e.character == 'G' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() ) {
-						window.find(nextSearchString, false, e.shiftKey, true, false, true, false);
-						event.preventDefault();
-						event.stopPropagation();
-						return false;
-					}
 				}
 			}
 		});

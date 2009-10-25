@@ -1,0 +1,15 @@
+Known issues
+------------
+- breaks on facebook (excluded for now)
+
+Old known issues (need verified in new plugin)
+----------------------------------------------
+- adding a dvd to a netflix queue succeeds, but overlay popup reports an error.
+- finding something then hitting ctrl-g starts advancing only on 2nd try.
+- breaks on cnn.com, macnn.com, facebook's token field, facebook chat field
+
+TODO
+----
+- implement input[type=.*] blacklist for "button", "file", etc. instead of whitelisting certain types
+- add autoupdate
+- add website blacklist
