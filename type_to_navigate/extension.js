@@ -5,18 +5,29 @@ jQuery(function($) {
 	$.smartSearch = function(o) {
 		
 		o = $.extend({
-			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], [contenteditable=true], textarea',
-			excludeHosts: /^.*facebook.com$/,
+			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], textarea',
+			excludeHosts: /^$/,
 			excludeChars: ' '
 		}, o);
 		
+		var focusedElements = function() {
+			// conventional fields
+			var els = $(o.excludeIfFocused).filter(function() {
+				return $(this).css('cursor') == 'text';
+			});
+			// facebook-style contenteditable="true" fields
+			if (!els.length) {
+				var s = window.getSelection();
+				els = $( (s.focusNode && s.focusNode.nodeType == 3 ? s.focusNode.parentNode : s.focusNode) || [] ).closest('[contenteditable=true]');
+			}
+			return els;
+		};
+				
 		if (location.host.match(o.excludeHosts)) return this;
 		
 		// escape key: blur any focused input
-		$(o.excludeIfFocused).bind('keydown', function(e) {
-			if (e.keyCode == 27) $(o.excludeIfFocused).filter(function() {
-				return $(this).css('cursor') == 'text';
-			}).trigger('blur');
+		$(o.excludeIfFocused).add('[contenteditable=true]').bind('keydown', function(e) {
+			if (e.keyCode == 27) focusedElements().trigger('blur');
 		});
 		
 		// handle command-g
@@ -40,16 +51,14 @@ jQuery(function($) {
 			e.character = String.fromCharCode(e.keyCode);
 		
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
-			if ( e.keyCode && !$(o.excludeIfFocused).filter(function() {
-				return $(this).css('cursor') == 'text';
-			}).size() && !e.cmdKey && !o.excludeChars.match(e.character)) {
+			if ( e.keyCode && !focusedElements().size() && !e.cmdKey && !o.excludeChars.match(e.character)) {
 				
 				// if return and selection is on a link
 				if (e.keyCode == 13) {
 				
 					var s = window.getSelection();
 					var el = $(s.anchorNode.parentElement);
-					if (el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase())
+					if ( el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
 						location.href = el.attr('href');
 					return;
 				
