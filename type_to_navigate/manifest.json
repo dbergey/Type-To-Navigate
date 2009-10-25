@@ -1,6 +1,6 @@
 {
   "name": "Type-To-Navigate",
-  "version": "0.14",
+  "version": "0.15",
 
   "description": "Enables type-to-navigate, where you can select links/anything just by typing, then hit return to follow a link.",
 
@@ -9,5 +9,6 @@
       "css": ["extension.css"],
       "js": ["jquery.min.js", "extension.js"]
   }],
-  "permissions": []
+  "permissions": [],
+  "update_url": "http://github.com/dbergey/type_to_navigate_chrome/downloads/updates.xml"
 }
