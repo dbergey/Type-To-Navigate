@@ -6,9 +6,6 @@ known issues:
 */
 jQuery(function($) {
 	var searchString = '';
-	var currentResult = 0;
-	var resultsCount = 0;
-	var results = [];
 	var keyupTimeout;
 	
 	$.smartSearch = function(o) {
@@ -20,7 +17,6 @@ jQuery(function($) {
 		
 		if (location.host.match(o.excludeHosts)) return this;
 		
-		// mark fields when they get focus so we can check when not to search
 		// escape key: blur any focused input
 		$(o.excludeIfFocused).bind('keydown', function(e) {
 			if (e.keyCode == 27) $(o.excludeIfFocused).filter(function() {
@@ -29,22 +25,23 @@ jQuery(function($) {
 		});
 		
 		// handle keypresses on page
-		$(window).bind('keypress', function(e) {
+		$(window).bind('keydown', function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
-			e.character = String.fromCharCode(e.charCode);
+			e.character = String.fromCharCode(e.keyCode);
 			
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
-			if ( e.charCode && !$(o.excludeIfFocused).filter(function() {
+			if ( e.keyCode && !$(o.excludeIfFocused).filter(function() {
 				return $(this).css('cursor') == 'text';
 			}).size() ) {
 				
 				if ( !e.cmdKey ) {
 				
 					// if return and selection is on a link
-					if (e.charCode == 13) {
+					if (e.keyCode == 13) {
 					
-						var el = $(window.getSelection().anchorNode.parentElement);
-						if (el[0].tagName == 'A' && el.trigger('click'))
+						var s = window.getSelection();
+						var el = $(s.anchorNode.parentElement);
+						if (el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
 							location.href = el.attr('href');
 						return;
 					
@@ -52,14 +49,14 @@ jQuery(function($) {
 					} else {
 					
 						// append char
-						window.status = searchString += e.character;
+						searchString += e.character;
+						nextSearchString = searchString;
 						
 						// postpone clearing
 						clearTimeout(keyupTimeout);
 						
 						keyupTimeout = setTimeout(function() {
-							window.status = searchString = '';
-							currentResult = 0;
+							searchString = '';
 						}, 1000);
 						
 						// clear selection and find again
@@ -68,11 +65,13 @@ jQuery(function($) {
 					}
 				
 				} else {
-					
 					// if cmd-g go to next
-					if ($.inArray(e.character, ['g','G']) >= 0) {
-						window.find(searchString, false, false, true, false, true, true);
+					var s = window.getSelection();
+					if ( e.character == 'G' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() ) {
+						window.find(nextSearchString, false, e.shiftKey, true, false, true, false);
 						event.preventDefault();
+						event.stopPropagation();
+						return false;
 					}
 				}
 			}
