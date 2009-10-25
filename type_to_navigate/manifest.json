@@ -10,5 +10,5 @@
       "js": ["jquery.min.js", "extension.js"]
   }],
   "permissions": [],
-  "update_url": "http://cloud.github.com/downloads/dbergey/type_to_navigate_chrome/updates.xml"
+  "update_url": "http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.xml"
 }
