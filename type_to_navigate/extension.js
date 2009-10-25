@@ -5,7 +5,6 @@ jQuery(function($) {
 	$.smartSearch = function(o) {
 		
 		o = $.extend({
-/*			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]',*/
 			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], [contenteditable=true], textarea',
 			excludeHosts: /^.*facebook.com$/,
 			excludeChars: ' '
@@ -27,7 +26,7 @@ jQuery(function($) {
 
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
-			if ( e.character == 'G' && e.cmdKey && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() ) {
+			if ( e.character == 'G' && e.cmdKey && s.rangeCount && $.trim(String(s).toLowerCase()) == $.trim(nextSearchString.toLowerCase()) ) {
 				window.find(nextSearchString, false, e.shiftKey, true, false, true, false);
 				event.preventDefault();
 				event.stopPropagation();
