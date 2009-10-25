@@ -3,7 +3,7 @@ input[type="text"]:focus,
 input[type="search"]:focus,
 input[type="password"]:focus,
 [contenteditable=true]:focus,
-.UIComposer_STATE_INPUT_FOCUSED [contenteditable=true] /* for facebook */
+.UIComposer_STATE_INPUT_FOCUSED [contenteditable=true], /* for facebook */
 textarea:focus {
 	cursor: text;
 }

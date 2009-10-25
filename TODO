@@ -10,6 +10,5 @@ Old known issues (need verified in new plugin)
 
 TODO
 ----
-- implement input[type=.*] blacklist for "button", "file", etc. instead of whitelisting certain types
-- add autoupdate
+- test autoupdate
 - add website blacklist
