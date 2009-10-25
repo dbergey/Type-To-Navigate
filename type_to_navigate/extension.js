@@ -5,7 +5,8 @@ jQuery(function($) {
 	$.smartSearch = function(o) {
 		
 		o = $.extend({
-			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]',
+/*			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]',*/
+			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], [contenteditable=true], textarea',
 			excludeHosts: /^.*facebook.com$/
 		}, o);
 		
