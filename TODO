@@ -2,13 +2,6 @@ Known issues
 ------------
 - breaks on facebook (excluded for now)
 
-Old known issues (need verified in new plugin)
-----------------------------------------------
-- adding a dvd to a netflix queue succeeds, but overlay popup reports an error.
-- finding something then hitting ctrl-g starts advancing only on 2nd try.
-- breaks on facebook's token field, facebook chat field
-
 TODO
 ----
-- test autoupdate
 - add website blacklist

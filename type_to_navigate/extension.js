@@ -7,7 +7,8 @@ jQuery(function($) {
 		o = $.extend({
 /*			excludeIfFocused: ':text, :password, textarea, [contenteditable=true]',*/
 			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], [contenteditable=true], textarea',
-			excludeHosts: /^.*facebook.com$/
+			excludeHosts: /^.*facebook.com$/,
+			excludeChars: ' '
 		}, o);
 		
 		if (location.host.match(o.excludeHosts)) return this;
@@ -42,38 +43,34 @@ jQuery(function($) {
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
 			if ( e.keyCode && !$(o.excludeIfFocused).filter(function() {
 				return $(this).css('cursor') == 'text';
-			}).size() ) {
+			}).size() && !e.cmdKey && !o.excludeChars.match(e.character)) {
 				
-				if ( !e.cmdKey ) {
+				// if return and selection is on a link
+				if (e.keyCode == 13) {
 				
-					// if return and selection is on a link
-					if (e.keyCode == 13) {
-					
-						var s = window.getSelection();
-						var el = $(s.anchorNode.parentElement);
-						if (el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
-							location.href = el.attr('href');
-						return;
-					
-					// do normal type-ahead search stuff
-					} else {
-					
-						// append char
-						searchString += e.character;
-						nextSearchString = searchString;
-						
-						// postpone clearing
-						clearTimeout(keyupTimeout);
-						
-						keyupTimeout = setTimeout(function() {
-							searchString = '';
-						}, 1000);
-						
-						// clear selection and find again
-						window.getSelection().removeAllRanges();
-						window.find(searchString, false, false, true, false, true, true);
-					}
+					var s = window.getSelection();
+					var el = $(s.anchorNode.parentElement);
+					if (el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase())
+						location.href = el.attr('href');
+					return;
 				
+				// do normal type-ahead search stuff
+				} else {
+				
+					// append char
+					searchString += e.character;
+					nextSearchString = searchString;
+					
+					// postpone clearing
+					clearTimeout(keyupTimeout);
+					
+					keyupTimeout = setTimeout(function() {
+						searchString = '';
+					}, 1000);
+					
+					// clear selection and find again
+					window.getSelection().removeAllRanges();
+					window.find(searchString, false, false, true, false, true, true);
 				}
 			}
 		});
