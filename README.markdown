@@ -8,8 +8,9 @@ Type-to-Navigate is an extension for Google Chrome / Chromium. It enables a type
 
 Installation
 ------------
-1. Drag type_to_navigate.crx into a Chrome / Chromium window.
-2. Click all ensuing confirmation buttons.
+1. Download [type_to_navigate.crx](http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate.crx).
+2. Drag it into a Chrome / Chromium window.
+3. Click all ensuing confirmation buttons.
 
 Chrome / Chromium will automatically update Type-to-Navigate when there is a new version, so there should be continual improvements to websites that do quirky things with their fields (HELLO FACEBOOK).
 
