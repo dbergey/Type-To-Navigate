@@ -26,6 +26,7 @@ Sites With Remaining Quirks
 
 - MSNBC -- nothing is selected when the user types
 - GitHub -- some letters don't register, like 's', which triggers focus on the search field, and 't', which does something unspecified.
+- Google search results -- Search for 'chrome' and then type 'chrome'. The search field becomes selected round about the letter R.
 
 Future Plans
 ------------
