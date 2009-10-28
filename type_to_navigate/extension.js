@@ -27,7 +27,7 @@ jQuery(function($) {
 		var focusSelectedLink = function(str) {
 			var s = window.getSelection();
 			var el = $(s.anchorNode.parentElement).closest('a');
-			if ( el.is('a') && el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == str.toLowerCase() ) {
+			if ( el.is('a') && s.rangeCount && String(s).toLowerCase() == str.toLowerCase() ) {
 				el[0].focus();
 			} else {
 				$('#type_to_navigate_non_focus_link')[0].focus();
