@@ -1,5 +1,6 @@
 jQuery(function($) {
 	var searchString = '';
+	var nextSearchString = '';
 	var keyupTimeout;
 	
 	$.smartSearch = function(o) {
@@ -22,6 +23,18 @@ jQuery(function($) {
 			}
 			return els;
 		};
+		
+		var focusSelectedLink = function(str) {
+			var s = window.getSelection();
+			var el = $(s.anchorNode.parentElement).closest('a');
+			if ( el.is('a') && el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == str.toLowerCase() ) {
+				el[0].focus();
+			} else {
+				$('#type_to_navigate_non_focus_link')[0].focus();
+			}
+		};
+		
+		$('body').append('<a href="javascript:void(0);" id="type_to_navigate_non_focus_link" style="position: fixed; top: -10px; left: -10px;"></a>');
 				
 		if (location.host.match(o.excludeHosts)) return this;
 		
@@ -39,6 +52,7 @@ jQuery(function($) {
 			var s = window.getSelection();
 			if ( e.character == 'G' && e.cmdKey && s.rangeCount && $.trim(String(s).toLowerCase()) == $.trim(nextSearchString.toLowerCase()) ) {
 				window.find(nextSearchString, false, e.shiftKey, true, false, true, false);
+				focusSelectedLink(nextSearchString);
 				event.preventDefault();
 				event.stopPropagation();
 				return false;
@@ -50,36 +64,26 @@ jQuery(function($) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
 		
-			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
-			if ( e.keyCode && !focusedElements().size() && !e.cmdKey && !o.excludeChars.match(e.character)) {
+			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus, and char isn't return
+			if ( e.keyCode && !focusedElements().size() && !e.cmdKey && e.keyCode != 13 && !o.excludeChars.match(e.character)) {
 				
-				// if return and selection is on a link
-				if (e.keyCode == 13) {
+				// append char
+				searchString += e.character;
+				nextSearchString = searchString;
 				
-					var s = window.getSelection();
-					var el = $(s.anchorNode.parentElement);
-					if ( el[0].tagName == 'A' && s.rangeCount && String(s).toLowerCase() == nextSearchString.toLowerCase() && el.trigger('click'))
-						location.href = el.attr('href');
-					return;
+				// postpone clearing
+				clearTimeout(keyupTimeout);
 				
-				// do normal type-ahead search stuff
-				} else {
+				keyupTimeout = setTimeout(function() {
+					searchString = '';
+				}, 1000);
 				
-					// append char
-					searchString += e.character;
-					nextSearchString = searchString;
-					
-					// postpone clearing
-					clearTimeout(keyupTimeout);
-					
-					keyupTimeout = setTimeout(function() {
-						searchString = '';
-					}, 1000);
-					
-					// clear selection and find again
-					window.getSelection().removeAllRanges();
-					window.find(searchString, false, false, true, false, true, true);
-				}
+				// clear selection and find again
+				window.getSelection().removeAllRanges();
+				window.find(searchString, false, false, true, false, true, true);
+				
+				// focus the link so return key follows
+				focusSelectedLink(nextSearchString);
 			}
 		});
 	};
