@@ -21,16 +21,23 @@ jQuery(function($) {
 		
 		var focusSelectedLink = function(str) {
 			var s = window.getSelection();
-			var el = $(s.anchorNode.parentElement).closest('a');
-			if ( el.is('a') && s.rangeCount && String(s).toLowerCase() == str.toLowerCase() ) {
-				el[0].focus();
+			var el = $(s.anchorNode).closest('a');
+			if ( el.is('a') ) {
+				el.trigger('focus');
+			} else if ( s.rangeCount ) {
+				// get selection
+				var range = document.createRange();
+				range.setStart(s.anchorNode, s.anchorOffset);
+				range.setEnd(s.extentNode, s.extentOffset);
+				// defocus (side-effect: deselects)
+				$(document.activeElement).trigger('blur');
+				// reselect selection
+				s.addRange(range);
 			} else {
 				$(document.activeElement).trigger('blur');
 			}
 		};
 		
-		// $('body').append('<a href="javascript:void(0);" id="type_to_navigate_non_focus_link" style="position: fixed; top: -10px; left: -10px;"></a>');
-				
 		if (location.host.match(o.excludeHosts)) return this;
 		
 		// escape key: blur any focused input
