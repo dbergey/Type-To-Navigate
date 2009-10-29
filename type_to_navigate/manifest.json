@@ -6,7 +6,6 @@
 
   "content_scripts": [{
       "matches": ["http://*/*", "https://*/*"],
-      "css": ["extension.css"],
       "js": ["jquery.min.js", "extension.js"]
   }],
   "permissions": [],

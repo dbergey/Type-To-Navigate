@@ -6,7 +6,7 @@ jQuery(function($) {
 	$.smartSearch = function(o) {
 		
 		o = $.extend({
-			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], textarea',
+			excludeIfFocused: 'input:not([type]), input[type="text"], input[type="search"], input[type="password"], [contenteditable="true"], textarea',
 			excludeHosts: /^$/,
 			excludeChars: ' '
 		}, o);
@@ -14,13 +14,8 @@ jQuery(function($) {
 		var focusedElements = function() {
 			// conventional fields
 			var els = $(o.excludeIfFocused).filter(function() {
-				return $(this).css('cursor') == 'text';
+				return this == document.activeElement;
 			});
-			// facebook-style contenteditable="true" fields
-			if (!els.length) {
-				var s = window.getSelection();
-				els = $( (s.focusNode && s.focusNode.nodeType == 3 ? s.focusNode.parentNode : s.focusNode) || [] ).closest('[contenteditable=true]');
-			}
 			return els;
 		};
 		
@@ -30,16 +25,16 @@ jQuery(function($) {
 			if ( el.is('a') && s.rangeCount && String(s).toLowerCase() == str.toLowerCase() ) {
 				el[0].focus();
 			} else {
-				$('#type_to_navigate_non_focus_link')[0].focus();
+				$(document.activeElement).trigger('blur');
 			}
 		};
 		
-		$('body').append('<a href="javascript:void(0);" id="type_to_navigate_non_focus_link" style="position: fixed; top: -10px; left: -10px;"></a>');
+		// $('body').append('<a href="javascript:void(0);" id="type_to_navigate_non_focus_link" style="position: fixed; top: -10px; left: -10px;"></a>');
 				
 		if (location.host.match(o.excludeHosts)) return this;
 		
 		// escape key: blur any focused input
-		$(o.excludeIfFocused).add('[contenteditable=true]').bind('keydown', function(e) {
+		$(o.excludeIfFocused).bind('keydown', function(e) {
 			if (e.keyCode == 27) focusedElements().trigger('blur');
 		});
 		
