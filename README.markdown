@@ -36,7 +36,7 @@ Sites With Remaining Quirks
 ---------------------------
 
 - GitHub -- some letters don't register, like 's', which triggers focus on the search field, and 't', which does something unspecified.
-- Google search results -- Search for 'chrome' and then type 'chrome'. The search field becomes selected round about the letter R.
+- Google search results -- When typing the same string as that for which was searched, it seems like some hidden text is selected. Typing something different is a workaround.
 
 Future Plans
 ------------
