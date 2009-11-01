@@ -57,6 +57,7 @@
 				opacity: 0;\
 				font: 18px arial;\
 				-webkit-transition: opacity .25s linear;\
+				z-index: 9999999;\
 			}\
 			#type_to_select_keys_inner {\
 				background: rgba(0, 0, 0, 0.75);\
