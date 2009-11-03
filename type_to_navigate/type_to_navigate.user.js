@@ -21,7 +21,7 @@
 		indicatorFadeTimeout: null,
 		indicatorFlashTimeout: null,
 		
-		trim: function(str) { return str.match(/^\s*(.*?)\s*$/)[1]; },
+		trimStart: function(str) { return str.match(/^\s*(.*?)*$/)[1]; },
 		
 		focusedElement: function() {
 			var el = document.activeElement;
@@ -63,7 +63,7 @@
 					bottom: 10%;\
 					text-align: center;\
 					opacity: 0;\
-					font: 18px arial;\
+					font: 18px helvetica;\
 					-webkit-transition: opacity .25s linear;\
 					z-index: 9999999;\
 					display: none;\
@@ -90,12 +90,11 @@
 			document.body.appendChild(ext.indicator = container.childNodes[0]);
 			ext.indicatorInner = document.getElementById('type_to_select_keys_inner');
 		},
-		displayInIndicator: function(str) {
-			console.log(str);
+		displayInIndicator: function(str, append) {
 			clearTimeout(ext.indicatorTimeout);
 			clearTimeout(ext.indicatorFadeTimeout);
 			if ( ext.indicator ) {
-				ext.indicatorInner.innerHTML = str;
+				ext.indicatorInner.innerHTML = str.replace(/ /g, '␣') + (append || '');
 				ext.indicator.style['-webkit-transition'] = 'none';
 				ext.indicator.style.opacity = 1.0;
 				ext.indicator.style.display = 'block';
@@ -119,7 +118,7 @@
 		},
 		selectedTextEqualsNextSearchString: function() {
 			var s = window.getSelection();
-			return s.rangeCount && ext.trim(String(s).toLowerCase()) == ext.trim(ext.nextSearchString.toLowerCase());
+			return s.rangeCount && ext.trimStart(String(s).toLowerCase()) == ext.trimStart(ext.nextSearchString.toLowerCase());
 		},
 		handleNonAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
@@ -129,25 +128,25 @@
 			if ( e.keyCode == 27 ) {
 				ext.displayInIndicator('␛');
 				if ( ext.focusedElement() || ext.selectedTextEqualsNextSearchString() ) {
-					document.activeElement.blur(); // FIXME: this isn't deselecting selection
+					document.activeElement.blur();
 				} else {
 					ext.flashIndicator();
 				}
 				return;
 			}
-	
+			
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
 			if ( e.character == 'G' && e.cmdKey && ext.selectedTextEqualsNextSearchString() ) {
 				window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 				// make sure we're not now IN indicator div, if so find again
-				if ( ext.trim(s.anchorNode.parentNode.id) == ext.trim(ext.indicatorInner.id) ) {
+				if ( ext.trimStart(s.anchorNode.parentNode.id) == ext.trimStart(ext.indicatorInner.id) ) {
 					window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
 				}
 				
 				ext.focusSelectedLink(ext.nextSearchString);
-				ext.displayInIndicator(ext.nextSearchString +' (⌘G)');
+				ext.displayInIndicator(ext.nextSearchString, ' (⌘G)');
 				event.preventDefault();
 				event.stopPropagation();
 				return false;
@@ -156,25 +155,32 @@
 		handleAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
-			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus, and char isn't return or space
-			if ( e.keyCode && !ext.focusedElement() && !e.cmdKey && e.character != ' ' ) {
+			
+			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
+			if ( e.keyCode && !ext.focusedElement() && !e.cmdKey ) {
 				
 				if ( e.keyCode == 13 && ext.nextSearchString ) { // return key but no link; flash
-					ext.displayInIndicator(ext.nextSearchString + ' ⏎');
+					ext.displayInIndicator(ext.nextSearchString, ' ⏎');
 					ext.flashIndicator();
 				} else {
-					// append char
-					ext.searchString += e.character;
-					ext.nextSearchString = ext.searchString;
+					if ( ext.searchString == '' && e.keyCode == 32 ) {
+						// do nothing, we allow the space bar to fall through to scroll the page if we have no searchstring
+					} else {
+						// append char
+						ext.searchString += e.character;
+						ext.nextSearchString = ext.searchString;
 					
-					// clear selection and find again
-					window.getSelection().removeAllRanges();
-					window.find(ext.searchString, false, false, true, false, true, true);
+						// clear selection and find again
+						window.getSelection().removeAllRanges();
+						window.find(ext.searchString, false, false, true, false, true, true);
 					
-					// focus the link so return key follows
-					ext.focusSelectedLink(ext.nextSearchString);
+						// focus the link so return key follows
+						ext.focusSelectedLink(ext.nextSearchString);
 					
-					ext.displayInIndicator(ext.nextSearchString);
+						ext.displayInIndicator(ext.nextSearchString);
+						e.preventDefault();
+						e.stopPropagation();
+					}
 				}
 				
 				// postpone clearing
@@ -182,6 +188,8 @@
 				ext.keyupTimeout = setTimeout(function() {
 					ext.searchString = '';
 				}, 1000);
+				
+				return false;
 			}
 		},
 		init: function() {

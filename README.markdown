@@ -15,9 +15,8 @@ Installation (Chrome / Chromium)
 Installation (Safari)
 ---------------------
 1. Install [SIMBL](http://www.culater.net/software/SIMBL/SIMBL.php) and [GreaseKit](http://8-p.info/greasekit/)
-2. Download [type_to_navigate.user.js](http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate/type_to_navigate.user.js)
-3. Drag it into a Safari window.
-4. Confirm installation.
+2. Click to install the userscript: [type_to_navigate.user.js](http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate/type_to_navigate.user.js)
+3. Confirm installation.
 
 Chrome / Chromium will automatically update Type-to-Navigate when there is a new version, so there should be continual improvements where needed. Safari won't, so you should check back to see if there are newer versions.
 
