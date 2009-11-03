@@ -13,6 +13,7 @@
 		
 		searchString: '',
 		nextSearchString: '',
+		displaySearchString: '',
 		keyupTimeout: null,
 		
 		indicator: null,
@@ -94,7 +95,7 @@
 			clearTimeout(ext.indicatorTimeout);
 			clearTimeout(ext.indicatorFadeTimeout);
 			if ( ext.indicator ) {
-				ext.indicatorInner.innerHTML = str.replace(/ /g, '␣') + (append || '');
+				ext.indicatorInner.innerHTML = str + (append || '');
 				ext.indicator.style['-webkit-transition'] = 'none';
 				ext.indicator.style.opacity = 1.0;
 				ext.indicator.style.display = 'block';
@@ -169,10 +170,11 @@
 						// append char
 						ext.searchString += e.character;
 						ext.nextSearchString = ext.searchString;
+						ext.displaySearchString = ext.searchString.replace(/ /g, '␣');
 					
 						// clear selection and find again
 						window.getSelection().removeAllRanges();
-						window.find(ext.searchString, false, false, true, false, true, true);
+						window.find(ext.searchString, false, false, true, false, true, false);
 					
 						// focus the link so return key follows
 						ext.focusSelectedLink(ext.nextSearchString);
