@@ -21,7 +21,7 @@
 		indicatorFadeTimeout: null,
 		indicatorFlashTimeout: null,
 		
-		trimStart: function(str) { return str.match(/^\s*(.*?)*$/)[1]; },
+		trim: function(str) { return str.match(/^\s*(.*?)\s*$/)[1]; },
 		
 		focusedElement: function() {
 			var el = document.activeElement;
@@ -118,7 +118,7 @@
 		},
 		selectedTextEqualsNextSearchString: function() {
 			var s = window.getSelection();
-			return s.rangeCount && ext.trimStart(String(s).toLowerCase()) == ext.trimStart(ext.nextSearchString.toLowerCase());
+			return s.rangeCount && ext.trim(String(s).toLowerCase()) == ext.trim(ext.nextSearchString.toLowerCase());
 		},
 		handleNonAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
@@ -141,7 +141,7 @@
 				window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 				// make sure we're not now IN indicator div, if so find again
-				if ( ext.trimStart(s.anchorNode.parentNode.id) == ext.trimStart(ext.indicatorInner.id) ) {
+				if ( ext.trim(s.anchorNode.parentNode.id) == ext.trim(ext.indicatorInner.id) ) {
 					window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
 				}
 				
