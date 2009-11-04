@@ -35,10 +35,10 @@
 			var el = s.anchorNode || false;
 			while ( el && el.tagName != 'A' ) el = el.parentNode;
 			if ( el && el.tagName == 'A' ) {
-				ext.indicatorInner.className = 'green';
+				if ( ext.indicator ) ext.indicatorInner.className = 'green';
 				el.focus();
 			} else if ( s.rangeCount ) {
-				ext.indicatorInner.className = '';
+				if ( ext.indicator ) ext.indicatorInner.className = '';
 				// get selection
 				var range = document.createRange();
 				range.setStart(s.anchorNode, s.anchorOffset);
@@ -48,11 +48,14 @@
 				// reselect selection
 				s.addRange(range);
 			} else {
-				ext.indicatorInner.className = '';
+				if ( ext.indicator ) ext.indicatorInner.className = '';
 				document.activeElement.blur();
 			}
 		},
 		createIndicator: function() {
+			// only make one, in the outside
+			if ( window.top != window ) return;
+			
 			// create indicator
 			var container = document.createElement('div');
 			container.innerHTML = '<div id="type_to_select_keys">\
@@ -108,6 +111,12 @@
 				}, 1000);
 			}
 		},
+		hideIndicator: function() {
+			ext.searchString = '';
+			ext.nextSearchString = '';
+			ext.displaySearchString = '';
+			ext.indicator.style.display = 'none';
+		},
 		flashIndicator: function() {
 			clearTimeout(ext.indicatorFlashTimeout);
 			if ( ext.indicator ) {
@@ -133,17 +142,18 @@
 				} else {
 					ext.flashIndicator();
 				}
+				ext.hideIndicator();
 				return;
 			}
 			
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
 			if ( e.character == 'G' && e.cmdKey && ext.selectedTextEqualsNextSearchString() ) {
-				window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
+				window.find(ext.nextSearchString, false, e.shiftKey, true, false, false, false);
 				
 				// make sure we're not now IN indicator div, if so find again
-				if ( ext.trim(s.anchorNode.parentNode.id) == ext.trim(ext.indicatorInner.id) ) {
-					window.find(ext.nextSearchString, false, e.shiftKey, true, false, true, false);
+				if ( ext.indicator && ext.trim(s.anchorNode.parentNode.id) == ext.trim(ext.indicatorInner.id) ) {
+					window.find(ext.nextSearchString, false, e.shiftKey, true, false, false, false);
 				}
 				
 				ext.focusSelectedLink(ext.nextSearchString);
@@ -160,7 +170,7 @@
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
 			if ( e.keyCode && !ext.focusedElement() && !e.cmdKey ) {
 				
-				if ( e.keyCode == 13 && ext.nextSearchString ) { // return key but no link; flash
+				if ( e.keyCode == 13 ) { // return key but no link; flash
 					ext.displayInIndicator(ext.nextSearchString, ' ⏎');
 					ext.flashIndicator();
 				} else {
@@ -174,7 +184,7 @@
 					
 						// clear selection and find again
 						window.getSelection().removeAllRanges();
-						window.find(ext.searchString, false, false, true, false, true, false);
+						window.find(ext.searchString, false, false, true, false, false, false);
 					
 						// focus the link so return key follows
 						ext.focusSelectedLink(ext.nextSearchString);
@@ -195,6 +205,8 @@
 			}
 		},
 		init: function() {
+			// only apply to top page
+			if ( document != window.top.document ) return;
 		
 			// add indicator div to page
 			if ( document.readyState == 'complete' )
@@ -203,7 +215,7 @@
 				window.addEventListener('load', function() {
 					ext.createIndicator();
 				});
-		
+			
 			// handle command-g & esc
 			window.addEventListener('keydown', function(e) {
 				ext.handleNonAlphaKeys(e);
