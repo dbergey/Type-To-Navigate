@@ -10,6 +10,9 @@
 (function() {
 	
 	var ext = {
+		version: '0.32',
+		updateCheckURL: 'http://sites.dkb/updates.js?'+(new Date().toDateString()), // no-cache once a day
+		updateButton: null,
 		
 		searchString: '',
 		nextSearchString: '',
@@ -58,9 +61,9 @@
 			
 			// create indicator
 			var container = document.createElement('div');
-			container.innerHTML = '<div id="type_to_select_keys">\
+			container.innerHTML = '<div id="type_to_navigate_keys">\
 				<style>\
-				#type_to_select_keys {\
+				#type_to_navigate_keys {\
 					position: fixed;\
 					left: 0;\
 					right: 0;\
@@ -72,7 +75,7 @@
 					z-index: 9999999;\
 					display: none;\
 				}\
-				#type_to_select_keys_inner {\
+				#type_to_navigate_keys_inner {\
 					background: rgba(0, 0, 0, 0.75);\
 					-webkit-border-radius: 8px;\
 					border: 2px solid rgba(255, 255, 255, 0.75);\
@@ -82,17 +85,17 @@
 					padding: 8px;\
 					color: white;\
 				}\
-				#type_to_select_keys_inner.red {\
+				#type_to_navigate_keys_inner.red {\
 					background: rgba(255, 0, 0, 0.75);\
 				}\
-				#type_to_select_keys_inner.green {\
+				#type_to_navigate_keys_inner.green {\
 					background: rgba(0, 191, 0, 0.75);\
 				}\
 				</style>\
-				<div id="type_to_select_keys_inner"></div>\
+				<div id="type_to_navigate_keys_inner"></div>\
 			</div>';
 			document.body.appendChild(ext.indicator = container.childNodes[0]);
-			ext.indicatorInner = document.getElementById('type_to_select_keys_inner');
+			ext.indicatorInner = document.getElementById('type_to_navigate_keys_inner');
 		},
 		displayInIndicator: function(str, append) {
 			clearTimeout(ext.indicatorTimeout);
@@ -133,7 +136,7 @@
 		handleNonAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
-	
+			
 			// handle esc in fields (blur)
 			if ( e.keyCode == 27 ) {
 				ext.displayInIndicator('␛');
@@ -174,8 +177,8 @@
 					ext.displayInIndicator(ext.nextSearchString, ' ⏎');
 					ext.flashIndicator();
 				} else {
-					if ( ext.searchString == '' && e.keyCode == 32 ) {
-						// do nothing, we allow the space bar to fall through to scroll the page if we have no searchstring
+					if ( ext.searchString == '' && (e.keyCode == 32 || e.keyCode == 8) ) {
+						// do nothing, we allow the space bar and delete to fall through to scroll the page if we have no searchstring
 					} else {
 						// append char
 						ext.searchString += e.character;
@@ -207,25 +210,65 @@
 		init: function() {
 			// only apply to top page
 			if ( document != window.top.document ) return;
-		
+			
 			// add indicator div to page
-			if ( document.readyState == 'complete' )
-				ext.createIndicator();
-			else
-				window.addEventListener('load', function() {
-					ext.createIndicator();
-				});
+			ext.createIndicator();
 			
 			// handle command-g & esc
 			window.addEventListener('keydown', function(e) {
 				ext.handleNonAlphaKeys(e);
 			});
-	
+
 			// handle typeable keypresses
 			window.addEventListener('keypress', function(e) {
 				ext.handleAlphaKeys(e);
 			});
+
+			// if safari && not loading live, check if is there an update?
+			if ( navigator.userAgent.match(/WebKit/) && !window._type_to_navigate_live) {
+				ext.checkForUpdate();
+			}
+		},
+		checkForUpdate: function() {
+			var s = document.createElement("script");        
+			s.setAttribute("src", ext.updateCheckURL);
+			document.body.appendChild(s);
+		},
+		offerUpdate: function(version, url) {
+			// compare versions
+			if ( version > ext.version ) {
+				var container = document.createElement('div');
+				container.innerHTML = '\
+				<style>\
+				#type_to_navigate_update_button {\
+					position: fixed;\
+					right: 10px;\
+					bottom: 10px;\
+					background: rgba(0, 0, 0, 0.5);\
+					display: block;\
+					color: white;\
+					font: 10px arial;\
+					border: none;\
+					padding: 5px;\
+				}\
+				</style>\
+				<a id="type_to_navigate_update_button" href="'+url+'" target="_blank">Update Type-To-Navigate</a>\
+				';
+				document.body.appendChild(ext.updateButton = container);
+				ext.updateButton.addEventListener('click', function(event) {
+					if ( confirm('There is a new version of Type-To-Navigate ('+version+'). Want to install it? The currently installed version is '+ext.version+'.') ) { return true; }
+					event.preventDefault();
+					return false;
+				});
+			};
 		}
 	};
-	ext.init();
+	window._type_to_navigate = ext;
+
+	// wait till the opportune time to set up
+	if ( document.readyState == 'complete' )
+		ext.init();
+	else window.addEventListener('load', function() {
+		ext.init();
+	});
 })();
