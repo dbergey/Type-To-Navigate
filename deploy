@@ -1,0 +1,25 @@
+#!/usr/bin/php
+<?php
+
+/*
+ * Updates various files with new version number from VERSION. Designed to be run from a hook before git commit.
+ */
+
+define('VERSION', trim(file_get_contents('VERSION')));
+
+$files = array(
+	'updates.xml' => "/(updatecheck.*version=')[\d.]*(')/",
+	'updates.js' => "/(offerUpdate\(')[\d.]*(',)/",
+	'type_to_navigate/manifest.json' => '/("version": ")[\d.]*(",)/',
+	'type_to_navigate/type_to_navigate.user.js' => "/(version: ')[\d.]*(',)/",
+);
+
+echo "Updating files to display indicate '".VERSION."':\n";
+foreach ( $files as $file => $pattern )
+{
+	$contents = preg_replace_callback($pattern, function($m) {
+		return $m[1].VERSION.$m[2];
+	}, file_get_contents($file));
+	echo "  $file\n";
+	if ($contents) file_put_contents($file, $contents);
+}

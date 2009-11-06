@@ -18,7 +18,7 @@ Installation (Safari)
 2. Click to install the userscript: [type_to_navigate.user.js](http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate/type_to_navigate.user.js)
 3. Confirm installation.
 
-Chrome / Chromium will automatically update Type-to-Navigate when there is a new version, so there should be continual improvements where needed. Safari won't, so you should check back to see if there are newer versions.
+Chrome / Chromium will automatically update Type-to-Navigate when there is a new version, so there should be continual improvements where needed. Safari will notify you when there is an update; just click the notification to upgrade.
 
 Interesting Development Notes
 -----------------------------
@@ -41,4 +41,4 @@ Future Plans
 ------------
 
 - Add user-configurable website blacklist. Might be good to upload this data somewhere transparently, so as to gather data on what sites don't work and which most annoy so.
-- Display keypresses and the current search string somehow.
+- 
