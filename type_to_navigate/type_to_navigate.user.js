@@ -10,7 +10,7 @@
 (function() {
 	
 	var ext = {
-		version: '0.32',
+		version: '0.33',
 		updateCheckURL: 'http://sites.dkb/updates.js?'+(new Date().toDateString()), // no-cache once a day
 		updateButton: null,
 		
