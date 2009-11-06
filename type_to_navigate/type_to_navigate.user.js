@@ -10,8 +10,9 @@
 (function() {
 	
 	var ext = {
-		version: '0.33',
-		updateCheckURL: 'http://sites.dkb/updates.js?'+(new Date().toDateString()), // no-cache once a day
+		version: '0.34',
+		// force no-cache once a day
+		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
 		updateButton: null,
 		
 		searchString: '',

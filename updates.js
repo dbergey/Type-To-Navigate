@@ -1,1 +1,1 @@
-window._type_to_navigate.offerUpdate('0.33', 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate/type_to_navigate.user.js');
+window._type_to_navigate.offerUpdate('0.34', 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/type_to_navigate/type_to_navigate.user.js');
