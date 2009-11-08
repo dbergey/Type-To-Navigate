@@ -1,0 +1,49 @@
+#!/usr/bin/php
+<?php
+
+/*
+ * Updates various files with new version number from VERSION. Designed to be run from a hook before git commit.
+ */
+
+$version = trim(file_get_contents('VERSION'));
+
+echo "Current VERSION is $version. Change? (blank to keep) ";
+$stdin = fopen('php://stdin', 'r');
+$new_version = trim(fgets($stdin, 100));
+if ( !$new_version )
+{
+	echo "Keeping version at $version.\n";
+	define('VERSION', $version);
+}
+else
+{
+	define('VERSION', $new_version);
+	file_put_contents('VERSION', VERSION."\n");
+
+	$files = array(
+		'updates.xml' => "/(updatecheck.*version=')[\d.]*(')/",
+		'updates.js' => "/(offerUpdate\(')[\d.]*(',)/",
+		'type_to_navigate/manifest.json' => '/("version": ")[\d.]*(",)/',
+		'type_to_navigate/type_to_navigate.user.js' => "/(version: ')[\d.]*(',)/",
+	);
+
+	echo "Updating files to indicate version ".VERSION."...\n";
+	foreach ( $files as $file => $pattern )
+	{
+		$contents = preg_replace_callback($pattern, function($m) {
+			return $m[1].VERSION.$m[2];
+		}, file_get_contents($file));
+		echo "  $file\n";
+		if ($contents) file_put_contents($file, $contents);
+	}
+	echo "...updated.\n";
+}
+
+echo "Building extension...";
+$params = array(
+	'extension' => 'type_to_navigate',
+	'output_crx' => 'type_to_navigate.crx',
+	'key_file' => 'type_to_navigate.pem',
+);
+system("crxmake --pack-extension={$params['extension']} --extension-output={$params['output_crx']} --pack-extension-key={$params['key_file']}", $return);
+echo ( !$return ) ? "built.\n" : "FAILED!\n";
