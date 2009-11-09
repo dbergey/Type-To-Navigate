@@ -10,7 +10,7 @@
 (function() {
 	
 	var ext = {
-		version: '0.34',
+		version: '0.35',
 		// force no-cache once a day
 		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
 		updateButton: null,
@@ -31,7 +31,7 @@
 		focusedElement: function() {
 			var el = document.activeElement;
 			var computedStyle = window.getComputedStyle(el);
-			return (( el.tagName.match(/INPUT|TEXTAREA/) && (el.getAttribute('type') || '').match(/^|text|search|password$/) ) || el.getAttribute('contenteditable') == 'true' || computedStyle['-webkit-user-modify'] != 'read-only') ? el : false;
+			return (( el.tagName.match(/INPUT|TEXTAREA|SELECT/) && (el.getAttribute('type') || '').match(/^|text|search|password$/) ) || el.getAttribute('contenteditable') == 'true' || computedStyle['-webkit-user-modify'] != 'read-only') ? el : false;
 		},
 		focusSelectedLink: function(str) {
 			var s = window.getSelection();
