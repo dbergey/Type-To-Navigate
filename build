@@ -39,6 +39,11 @@ else
 	echo "...updated.\n";
 }
 
+echo "Removing old extension...";
+system("rm type_to_navigate.crx", $return);
+echo ( !$return ) ? "removed.\n" : "FAILED!\n";
+unset($return);
+
 echo "Building extension...";
 $params = array(
 	'extension' => 'type_to_navigate',
