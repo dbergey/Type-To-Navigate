@@ -10,7 +10,8 @@
 (function() {
 	
 	var ext = {
-		version: '0.35',
+		version: '0.36',
+		
 		// force no-cache once a day
 		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
 		updateButton: null,
@@ -127,7 +128,7 @@
 				ext.indicatorInner.className = 'red';
 				ext.indicatorFlashTimeout = setTimeout(function() {
 					ext.indicatorInner.className = '';
-				}, 200);
+				}, 400);
 			}
 		},
 		selectedTextEqualsNextSearchString: function() {
@@ -189,11 +190,15 @@
 						// clear selection and find again
 						window.getSelection().removeAllRanges();
 						window.find(ext.searchString, false, false, true, false, false, false);
-					
+						
 						// focus the link so return key follows
 						ext.focusSelectedLink(ext.nextSearchString);
 					
 						ext.displayInIndicator(ext.nextSearchString);
+						
+						// check for nothing found
+						if ( !window.getSelection().rangeCount ) ext.flashIndicator();
+						
 						e.preventDefault();
 						e.stopPropagation();
 					}
