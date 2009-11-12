@@ -10,7 +10,7 @@
 (function() {
 	
 	var ext = {
-		version: '0.36',
+		version: '0.37',
 		
 		// force no-cache once a day
 		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
@@ -32,7 +32,7 @@
 		focusedElement: function() {
 			var el = document.activeElement;
 			var computedStyle = window.getComputedStyle(el);
-			return (( el.tagName.match(/INPUT|TEXTAREA|SELECT/) && (el.getAttribute('type') || '').match(/^|text|search|password$/) ) || el.getAttribute('contenteditable') == 'true' || computedStyle['-webkit-user-modify'] != 'read-only') ? el : false;
+			return (( el.tagName.match(/input|textarea|select|button/i) && (el.getAttribute('type') || '').match(/^|text|search|password$/) ) || el.getAttribute('contenteditable') == 'true' || computedStyle['-webkit-user-modify'] != 'read-only') ? el : false;
 		},
 		focusSelectedLink: function(str) {
 			var s = window.getSelection();
@@ -231,7 +231,7 @@
 			});
 
 			// if safari && not loading live, check if is there an update?
-			if ( navigator.userAgent.match(/WebKit/) && !window._type_to_navigate_live) {
+			if ( !navigator.userAgent.match(/Chrome/) && !window._type_to_navigate_live) {
 				ext.checkForUpdate();
 			}
 		},
@@ -240,6 +240,7 @@
 			s.setAttribute("src", ext.updateCheckURL);
 			document.body.appendChild(s);
 		},
+		// called by callback
 		offerUpdate: function(version, url) {
 			// compare versions
 			if ( version > ext.version ) {
