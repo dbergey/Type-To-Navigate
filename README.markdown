@@ -33,3 +33,8 @@ Future Plans
 ------------
 
 - Add user-configurable website blacklist. Might be good to upload this data somewhere transparently, so as to gather data on what sites don't work and which most annoy so.
+
+Author
+------
+Daniel Bergey  
+[http://twitter.com/dbergey](http://twitter.com/dbergey)
