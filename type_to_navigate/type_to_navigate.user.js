@@ -10,9 +10,10 @@
 (function() {
 	
 	var ext = {
-		version: '0.37',
+		version: '0.38',
 		
 		// force no-cache once a day
+		updateCheckEnable: true,
 		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
 		updateButton: null,
 		
@@ -236,6 +237,8 @@
 			}
 		},
 		checkForUpdate: function() {
+			// don't check on ssl, and also only 100th page load or so
+			if ( !ext.updateCheckEnable || location.href.match(/^https/) || Math.floor(Math.random() * 100) != 50) return;
 			var s = document.createElement("script");        
 			s.setAttribute("src", ext.updateCheckURL);
 			document.body.appendChild(s);

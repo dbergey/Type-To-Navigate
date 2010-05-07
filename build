@@ -3,6 +3,8 @@
 
 /*
  * Updates various files with new version number from VERSION. Designed to be run from a hook before git commit.
+ * 
+ * Requires ruby and the crxmake gem: gem source -a http://gemcutter.org; sudo gem install crxmake
  */
 
 $version = trim(file_get_contents('VERSION'));
