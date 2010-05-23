@@ -10,7 +10,7 @@
 (function() {
 	
 	var ext = {
-		version: '0.38',
+		version: '0.39',
 		
 		// force no-cache once a day
 		updateCheckEnable: true,
