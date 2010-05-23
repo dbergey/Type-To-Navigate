@@ -174,7 +174,7 @@
 			e.character = String.fromCharCode(e.keyCode);
 			
 			// if it was a typeable character, Cmd key wasn't down, and a field doesn't have focus
-			if ( e.keyCode && !ext.focusedElement() && !e.cmdKey ) {
+			if ( e.keyCode && !ext.focusedElement() && !e.cmdKey && !e.metaKey && !e.ctrlKey) {
 				
 				if ( e.keyCode == 13 ) { // return key but no link; flash
 					ext.displayInIndicator(ext.nextSearchString, ' ⏎');
