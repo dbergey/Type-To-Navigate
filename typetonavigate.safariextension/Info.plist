@@ -11,9 +11,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.01</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>40</string>
 	<key>Chrome</key>
 	<dict/>
 	<key>Content</key>
@@ -22,7 +22,7 @@
 		<dict>
 			<key>Start</key>
 			<array>
-				<string>type_to_navigate.user.js</string>
+				<string>injection.js</string>
 			</array>
 		</dict>
 	</dict>
@@ -41,7 +41,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://danielbergey.com/software/typetonavigate/updates_safari.plist</string>
+	<string>http://dbergey.github.com/Type-To-Navigate/updates_safari.plist</string>
 	<key>Website</key>
 	<string>http://danielbergey.com/software/typetonavigate/</string>
 </dict>
