@@ -1,13 +1,13 @@
 {
   "name": "Type-To-Navigate",
-  "version": "0.39",
+  "version": "40",
 
   "description": "Enables type-to-navigate, where you can select links/anything just by typing, then hit return to follow a link.",
 
   "content_scripts": [{
       "matches": ["http://*/*", "https://*/*", "file://*/*"],
-      "js": ["type_to_navigate.user.js"]
+      "js": ["injection.js"]
   }],
   "permissions": [],
-  "update_url": "http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.xml"
+  "update_url": "http://dbergey.github.com/Type-To-Navigate/typetonavigate.crx"
 }
