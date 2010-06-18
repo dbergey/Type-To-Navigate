@@ -10,13 +10,6 @@
 (function() {
 	
 	var ext = {
-		version: '0.39',
-		
-		// force no-cache once a day
-		updateCheckEnable: true,
-		updateCheckURL: 'http://github.com/dbergey/type_to_navigate_chrome/raw/master/updates.js?'+(new Date().toDateString()),
-		updateButton: null,
-		
 		searchString: '',
 		nextSearchString: '',
 		displaySearchString: '',
@@ -230,47 +223,6 @@
 			window.addEventListener('keypress', function(e) {
 				ext.handleAlphaKeys(e);
 			});
-
-			// if safari && not loading live, check if is there an update?
-			if ( !navigator.userAgent.match(/Chrome/) && !window._type_to_navigate_live) {
-				ext.checkForUpdate();
-			}
-		},
-		checkForUpdate: function() {
-			// don't check on ssl, and also only 100th page load or so
-			if ( !ext.updateCheckEnable || location.href.match(/^https/) || Math.floor(Math.random() * 100) != 50) return;
-			var s = document.createElement("script");        
-			s.setAttribute("src", ext.updateCheckURL);
-			document.body.appendChild(s);
-		},
-		// called by callback
-		offerUpdate: function(version, url) {
-			// compare versions
-			if ( version > ext.version ) {
-				var container = document.createElement('div');
-				container.innerHTML = '\
-				<style>\
-				#type_to_navigate_update_button {\
-					position: fixed;\
-					right: 10px;\
-					bottom: 10px;\
-					background: rgba(0, 0, 0, 0.5);\
-					display: block;\
-					color: white;\
-					font: 10px arial;\
-					border: none;\
-					padding: 5px;\
-				}\
-				</style>\
-				<a id="type_to_navigate_update_button" href="'+url+'" target="_blank">Update Type-To-Navigate</a>\
-				';
-				document.body.appendChild(ext.updateButton = container);
-				ext.updateButton.addEventListener('click', function(event) {
-					if ( confirm('There is a new version of Type-To-Navigate ('+version+'). Want to install it? The currently installed version is '+ext.version+'.') ) { return true; }
-					event.preventDefault();
-					return false;
-				});
-			};
 		}
 	};
 	window._type_to_navigate = ext;

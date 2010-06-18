@@ -9,6 +9,7 @@
 
 $version = trim(file_get_contents('VERSION'));
 
+echo "This script builds the Chrome extension only.\n";
 echo "Current VERSION is $version. Change? (blank to keep) ";
 $stdin = fopen('php://stdin', 'r');
 $new_version = trim(fgets($stdin, 100));
@@ -24,9 +25,7 @@ else
 
 	$files = array(
 		'updates.xml' => "/(updatecheck.*version=')[\d.]*(')/",
-		'updates.js' => "/(offerUpdate\(')[\d.]*(',)/",
 		'type_to_navigate/manifest.json' => '/("version": ")[\d.]*(",)/',
-		'type_to_navigate/type_to_navigate.user.js' => "/(version: ')[\d.]*(',)/",
 	);
 
 	echo "Updating files to indicate version ".VERSION."...\n";
