@@ -40,7 +40,7 @@ Future Plans
 License
 -------
 
-Type-To-Navigate is licensed under [http://creativecommons.org/licenses/MIT/](the MIT license). Also, I remain the official publisher, including in Apple's Gallery and automatic update feed. Feel free to fork, push changes back to me and I'll incorporate them as I see fit.
+Type-To-Navigate is licensed under [the MIT license](http://creativecommons.org/licenses/MIT/). Also, I remain the official publisher, including in Apple's Safari Extensions Gallery and automatic update feed. Feel free to fork, but push changes back to me and I'll incorporate them in the official version as I see fit.
 
 Author
 ------
