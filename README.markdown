@@ -19,7 +19,7 @@ Installation
 	
 2. Click all ensuing confirmation buttons.
 
-Chrome will automatically update Type-to-Navigate when there is a new version, so there should be continual improvements where needed. Safari can be configured to auto-update as well.
+Both browsers provide an automatic extension update service, so there should be continual improvements where needed. Safari will not install updates without permission unless you check "Install Updates Automatically" in Extensions preferences; Chrome updates them automatically.
 
 Sites With Remaining Quirks
 ---------------------------
@@ -37,7 +37,10 @@ Future Plans
 - useful hotkeys like  ⌘C to copy the selected link, and ⌘I to send the link to instapaper
 - IFRAME support .. right now you can't type to select inside them.
 
+License
+-------
 
+Type-To-Navigate is licensed under [http://creativecommons.org/licenses/MIT/](the MIT license) which basically means you can share and adapt this code, but I retain copyright and remain the official publisher, including automatic updates.
 
 Author
 ------
