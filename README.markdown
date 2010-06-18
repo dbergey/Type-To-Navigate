@@ -37,6 +37,11 @@ Future Plans
 - useful hotkeys like  ⌘C to copy the selected link, and ⌘I to send the link to instapaper
 - IFRAME support .. right now you can't type to select inside them.
 
+Version History
+---------------
+- 1.01 - Migrated to github servers, removed old (inactive) userscript update code.
+- 1.00 - Initial public release.
+
 License
 -------
 
