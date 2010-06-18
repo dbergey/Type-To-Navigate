@@ -25,7 +25,7 @@ else
 
 	$files = array(
 		'updates.xml' => "/(updatecheck.*version=')[\d.]*(')/",
-		'type_to_navigate/manifest.json' => '/("version": ")[\d.]*(",)/',
+		'typetonavigate.safariextension/manifest.json' => '/("version": ")[\d.]*(",)/',
 	);
 
 	echo "Updating files to indicate version ".VERSION."...\n";
@@ -41,15 +41,15 @@ else
 }
 
 echo "Removing old extension...";
-system("rm type_to_navigate.crx", $return);
+system("rm typetonavigate.crx", $return);
 echo ( !$return ) ? "removed.\n" : "FAILED!\n";
 unset($return);
 
 echo "Building extension...";
 $params = array(
-	'extension' => 'type_to_navigate',
-	'output_crx' => 'type_to_navigate.crx',
-	'key_file' => 'type_to_navigate.pem',
+	'extension' => 'typetonavigate.safariextension',
+	'output_crx' => 'typetonavigate.crx',
+	'key_file' => 'typetonavigate.pem',
 );
 system("crxmake --pack-extension={$params['extension']} --extension-output={$params['output_crx']} --pack-extension-key={$params['key_file']}", $return);
 echo ( !$return ) ? "built.\n" : "FAILED!\n";
