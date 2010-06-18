@@ -40,9 +40,9 @@ Future Plans
 License
 -------
 
-Type-To-Navigate is licensed under [http://creativecommons.org/licenses/MIT/](the MIT license) which basically means you can share and adapt this code, but I retain copyright and remain the official publisher, including automatic updates.
+Type-To-Navigate is licensed under [http://creativecommons.org/licenses/MIT/](the MIT license). Also, I remain the official publisher, including in Apple's Gallery and automatic update feed. Feel free to fork, push changes back to me and I'll incorporate them as I see fit.
 
 Author
 ------
-Daniel Bergey  
+Daniel K. Bergey  
 [http://twitter.com/dbergey](http://twitter.com/dbergey)
