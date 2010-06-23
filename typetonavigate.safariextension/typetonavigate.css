@@ -26,3 +26,6 @@ ttn_inner[color=red] {
 ttn_inner[color=green] {
 	background: rgba(0, 191, 0, 0.75);
 }
+ttn_inner[color=blue] {
+	background: rgba(0, 0, 191, 0.75);
+}

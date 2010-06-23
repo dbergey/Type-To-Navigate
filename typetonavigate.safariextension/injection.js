@@ -98,10 +98,11 @@ var TTNInjection = (function() {
 			
 			// create element 
 			var ttn_clipboard = document.createElement('ttn_clipboard');
-			ttn_clipboard.style.position = 'absolute'; // change to "display: none"
+			ttn_clipboard.style.position = 'absolute';
+			ttn_clipboard.style.top = '-1000px';
 			ttn_clipboard.innerHTML = textToCopy;
 			document.getElementsByTagName('body')[0].appendChild(ttn_clipboard);
-			console.log(textToCopy);
+			console.log('Copied:', textToCopy);
 			
 			// select it
 			s.removeAllRanges();
@@ -150,9 +151,17 @@ var TTNInjection = (function() {
 					event.stopPropagation();
 					return false;
 				} else if ( e.character == 'C' && e.cmdKey ) {
-					var href = document.activeElement.getAttribute('href');
-					this.hijackCopyWith(href);
-					this.displayInIndicator('Url copied!', ' (⌘C)');
+					var href = this.mungeHref(document.activeElement.getAttribute('href')).join('');
+					var prefix = href[0];
+					var this_href = href[1];
+					
+					if (href) {
+						this.hijackCopyWith(href);
+						if ( this.indicator ) {
+							this.indicatorInner.setAttribute('color', 'blue');
+							this.displayInIndicator('URL copied', ' (⌘C)');
+						}
+					}
 				}
 			}
 		},
@@ -207,6 +216,25 @@ var TTNInjection = (function() {
 				
 				// return false;
 			}
+		},
+		mungeHref: function(href) {
+			// figure out what to do 
+			if ( href.match(/^([a-zA-Z]+:)/) )
+				var prefix = '';
+			else if ( href.match(/^\//) )
+				var prefix = location.protocol +'//'+ location.host;
+			else if ( href.match(/^#/) )
+				var prefix = location.href;
+			else
+				var prefix = location.href.replace(/\/[^\/]*(\?.*)?$/, '/');
+				
+			// deal with ../ in <a href>
+			var this_href = href;
+			while ( this_href.match(/\.\.\//) ) {
+				this_href = this_href.replace(/\.\.\//, '');
+				prefix = prefix.replace(/[^\/]*\/$/, '');
+			}
+			return [prefix, this_href];
 		},
 		init: function() {
 			// only apply to top page
