@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<array/>
+<array>
+	<dict>
+		<key>DefaultValue</key>
+		<string>*google.com/reader*,</string>
+		<key>Key</key>
+		<string>blacklist</string>
+		<key>Title</key>
+		<string>Site Blacklist</string>
+		<key>Titles</key>
+		<array/>
+		<key>Type</key>
+		<string>TextField</string>
+	</dict>
+</array>
 </plist>

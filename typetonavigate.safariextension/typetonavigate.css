@@ -1,0 +1,28 @@
+ttn {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 10%;
+	text-align: center;
+	opacity: 0;
+	font: 18px helvetica;
+	-webkit-transition: opacity .25s linear;
+	z-index: 9999999;
+	display: none;
+}
+ttn_inner {
+	background: rgba(0, 0, 0, 0.75);
+	-webkit-border-radius: 8px;
+	border: 2px solid rgba(255, 255, 255, 0.75);
+	-webkit-box-shadow: 0 3px 25px rgba(0, 0, 0, 0.75);
+	margin: 0 auto;
+	display: inline-block;
+	padding: 8px !important;
+	color: white;
+}
+ttn_inner[color=red] {
+	background: rgba(255, 0, 0, 0.75);
+}
+ttn_inner[color=green] {
+	background: rgba(0, 191, 0, 0.75);
+}
