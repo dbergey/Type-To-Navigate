@@ -91,6 +91,31 @@ var TTNInjection = (function() {
 			var s = window.getSelection();
 			return s.rangeCount && this.trim(String(s).toLowerCase()) == this.trim(this.nextSearchString.toLowerCase());
 		},
+		hijackCopyWith: function(textToCopy) {
+			// get current selection
+			var s = window.getSelection();
+			var currentSelection = s.getRangeAt(0);
+			
+			// create element 
+			var ttn_clipboard = document.createElement('ttn_clipboard');
+			ttn_clipboard.style.position = 'absolute'; // change to "display: none"
+			ttn_clipboard.innerHTML = textToCopy;
+			document.getElementsByTagName('body')[0].appendChild(ttn_clipboard);
+			console.log(textToCopy);
+			
+			// select it
+			s.removeAllRanges();
+			var range = document.createRange();
+			range.selectNode(document.querySelectorAll('ttn_clipboard')[0]);
+			s.addRange(range);
+			
+			// do this stuff immediately after copy operation
+			setTimeout(function() {
+				s.removeAllRanges();
+				s.addRange(currentSelection);
+				ttn_clipboard.parentNode.removeChild(ttn_clipboard);
+			}, 0);
+		},
 		handleNonAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
@@ -109,21 +134,29 @@ var TTNInjection = (function() {
 			
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
-			if ( e.character == 'G' && e.cmdKey && this.selectedTextEqualsNextSearchString() ) {
-				window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
+			if ( this.selectedTextEqualsNextSearchString() ) {
 				
-				// make sure we're not now IN indicator div, if so find again
-				if ( this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName) ) {
+				if ( e.character == 'G' && e.cmdKey ) {
 					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
-				}
 				
-				this.focusSelectedLink(this.nextSearchString);
-				this.displayInIndicator(this.nextSearchString, ' (⌘G)');
-				event.preventDefault();
-				event.stopPropagation();
-				return false;
+					// make sure we're not now IN indicator div, if so find again
+					if ( this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName) ) {
+						window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
+					}
+				
+					this.focusSelectedLink(this.nextSearchString);
+					this.displayInIndicator(this.nextSearchString, ' (⌘G)');
+					event.preventDefault();
+					event.stopPropagation();
+					return false;
+				} else if ( e.character == 'C' && e.cmdKey ) {
+					var href = document.activeElement.getAttribute('href');
+					this.hijackCopyWith(href);
+					this.displayInIndicator('Url copied!', ' (⌘C)');
+				}
 			}
 		},
+		
 		handleAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
