@@ -16,20 +16,35 @@ var TTNInjection = (function() {
 		blacklist: [],
 		
 		trim: function(str) { return str.match(/^\s*(.*?)\s*$/)[1]; },
-		
+		fireEvent: function(el, eventName) {
+			var evt = document.createEvent("HTMLEvents");
+			evt.initEvent(eventName, true, true);
+			el.dispatchEvent(evt);
+		},
 		focusedElement: function() {
 			var el = document.activeElement;
 			var computedStyle = window.getComputedStyle(el);
 			return (( el.tagName.match(/input|textarea|select|button/i) && (el.getAttribute('type') || '').match(/^|text|search|password$/) ) || el.getAttribute('contenteditable') == 'true' || computedStyle['-webkit-user-modify'] != 'read-only') ? el : false;
 		},
+		mouseoutListener: function() {
+			TTNInjection.fireEvent(this, 'mouseout');
+			// make sure we remove ourselves
+			this.removeEventListener('focusout', TTNInjection.mouseoutListener);
+		},
 		focusSelectedLink: function(str) {
 			var s = window.getSelection();
+			
 			// get element
 			var el = s.anchorNode || false;
 			while ( el && el.tagName != 'A' ) el = el.parentNode;
+			
 			if ( el && el.tagName == 'A' ) {
 				if ( this.indicator ) this.indicatorInner.setAttribute('color', 'green');
 				el.focus();
+				// send mouseover event to new element
+				TTNInjection.fireEvent(el, 'mouseover');
+				// send mouseout event when it loses focus
+				el.addEventListener('focusout', TTNInjection.mouseoutListener);
 			} else if ( s.rangeCount ) {
 				if ( this.indicator ) this.indicatorInner.removeAttribute('color');
 				// get selection
@@ -150,7 +165,7 @@ var TTNInjection = (function() {
 					event.preventDefault();
 					event.stopPropagation();
 					return false;
-				} else if ( e.character == 'C' && e.cmdKey ) {
+				} else if ( e.character == 'C' && e.cmdKey && !e.metaKey && !e.shiftKey ) {
 					var href = this.mungeHref(document.activeElement.getAttribute('href')).join('');
 					var prefix = href[0];
 					var this_href = href[1];

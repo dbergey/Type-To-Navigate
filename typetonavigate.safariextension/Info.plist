@@ -11,9 +11,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.2</string>
+	<string>1.0.3</string>
 	<key>CFBundleVersion</key>
-	<string>41</string>
+	<string>42</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -39,7 +39,7 @@
 		</array>
 	</dict>
 	<key>Description</key>
-	<string>Type to select text in a link, then hit return to follow it. Use ⌘G to find next.</string>
+	<string>Type to select text in a link, then hit return to follow it. Use ⌘G to find next. Use ⌘C to copy link URL.</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
