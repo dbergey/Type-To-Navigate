@@ -21,6 +21,11 @@
 	</dict>
 	<key>Content</key>
 	<dict>
+		<key>Blacklist</key>
+		<array>
+			<string>http://*.google.com/reader/*</string>
+			<string>https://*.google.com/reader/*</string>
+		</array>
 		<key>Scripts</key>
 		<dict>
 			<key>Start</key>

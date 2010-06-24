@@ -12,7 +12,7 @@
 		<key>Titles</key>
 		<array/>
 		<key>Type</key>
-		<string>TextField</string>
+		<string>Hidden</string>
 	</dict>
 </array>
 </plist>
