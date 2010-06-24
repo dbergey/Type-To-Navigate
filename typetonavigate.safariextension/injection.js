@@ -133,7 +133,7 @@ var TTNInjection = (function() {
 			}, 0);
 		},
 		handleNonAlphaKeys: function(e) {
-			e.cmdKey = e.metaKey && !e.ctrlKey;
+			e.cmdKey = e.metaKey;
 			e.character = String.fromCharCode(e.keyCode);
 			
 			// handle esc in fields (blur)
@@ -165,7 +165,7 @@ var TTNInjection = (function() {
 					event.preventDefault();
 					event.stopPropagation();
 					return false;
-				} else if ( e.character == 'C' && e.cmdKey && !e.metaKey && !e.shiftKey ) {
+				} else if ( e.character == 'C' && e.cmdKey && !e.ctrlKey && !e.shiftKey ) {
 					var href = this.mungeHref(document.activeElement.getAttribute('href')).join('');
 					var prefix = href[0];
 					var this_href = href[1];
