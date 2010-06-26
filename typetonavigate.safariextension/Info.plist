@@ -39,7 +39,7 @@
 		</array>
 	</dict>
 	<key>Description</key>
-	<string>Type to select text in a link, then hit return to follow it. Use ⌘G to find next. Use ⌘C to copy link URL.</string>
+	<string>Type to select text in a link, hit return to follow it. ⌘G: Find Next, ⌘C: Copy URL, ⌘I: Send URL to Instapaper.</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>

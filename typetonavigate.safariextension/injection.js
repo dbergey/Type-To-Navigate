@@ -15,7 +15,7 @@ var TTNInjection = (function() {
 		
 		blacklist: [],
 		
-		trim: function(str) { return str.match(/^\s*(.*?)\s*$/)[1]; },
+		trim: function(str) { return String(str).match(/^\s*(.*?)\s*$/)[1]; },
 		fireEvent: function(el, eventName) {
 			var evt = document.createEvent("HTMLEvents");
 			evt.initEvent(eventName, true, true);
@@ -33,20 +33,20 @@ var TTNInjection = (function() {
 		},
 		focusSelectedLink: function(str) {
 			var s = window.getSelection();
+			var color = '';
 			
 			// get element
 			var el = s.anchorNode || false;
 			while ( el && el.tagName != 'A' ) el = el.parentNode;
 			
 			if ( el && el.tagName == 'A' ) {
-				if ( this.indicator ) this.indicatorInner.setAttribute('color', 'green');
+				color = 'green';
 				el.focus();
 				// send mouseover event to new element
 				TTNInjection.fireEvent(el, 'mouseover');
 				// send mouseout event when it loses focus
 				el.addEventListener('focusout', TTNInjection.mouseoutListener);
 			} else if ( s.rangeCount ) {
-				if ( this.indicator ) this.indicatorInner.removeAttribute('color');
 				// get selection
 				var range = document.createRange();
 				range.setStart(s.anchorNode, s.anchorOffset);
@@ -55,10 +55,31 @@ var TTNInjection = (function() {
 				document.activeElement.blur();
 				// reselect selection
 				s.addRange(range);
+				
+				// var el = s.extentNode || false;
+				// if (el) {
+				// 	while ( el.nodeType == 3 ) el = el.parentNode;
+				// 	console.log(el.nodeType);
+				// 	// send mouseover event to new element
+				// 	TTNInjection.fireEvent(el, 'mouseover');
+				// 	var focusFakeEl = this.createHiddenElementWithTagNameAndContents('a');
+				// 	focusFakeEl.focus();
+				// 	// send mouseout event when it loses focus
+				// 	focusFakeEl.addEventListener('focusout', function() { TTNInjection.mouseoutListener.call(el); });
+				// }
+				
 			} else {
-				if ( this.indicator ) this.indicatorInner.removeAttribute('color');
 				document.activeElement.blur();
 			}
+			return color;
+		},
+		createHiddenElementWithTagNameAndContents: function(tagName, contents) {
+			var hiddenEl = document.createElement(tagName);
+			// hiddenEl.style.position = 'absolute';
+			// hiddenEl.style.top = '-1000px';
+			if (contents) hiddenEl.innerHTML = contents;
+			document.getElementsByTagName('body')[0].appendChild(hiddenEl);
+			return hiddenEl;
 		},
 		createIndicator: function() {
 			// only make one, in the outside
@@ -70,10 +91,11 @@ var TTNInjection = (function() {
 			document.getElementsByTagName('body')[0].appendChild(this.indicator);
 			this.indicatorInner = document.getElementsByTagName('ttn_inner')[0];
 		},
-		displayInIndicator: function(str, append) {
+		displayInIndicator: function(str, append, color) {
 			clearTimeout(this.indicatorTimeout);
 			clearTimeout(this.indicatorFadeTimeout);
 			if ( this.indicator ) {
+				this.indicatorInner.setAttribute('color', color || '');
 				this.indicatorInner.innerHTML = str + (append || '');
 				this.indicator.style['-webkit-transition'] = 'none';
 				this.indicator.style.opacity = 1.0;
@@ -111,12 +133,8 @@ var TTNInjection = (function() {
 			var s = window.getSelection();
 			var currentSelection = s.getRangeAt(0);
 			
-			// create element 
-			var ttn_clipboard = document.createElement('ttn_clipboard');
-			ttn_clipboard.style.position = 'absolute';
-			ttn_clipboard.style.top = '-1000px';
-			ttn_clipboard.innerHTML = textToCopy;
-			document.getElementsByTagName('body')[0].appendChild(ttn_clipboard);
+			// create element
+			var ttn_clipboard = this.createHiddenElementWithTagNameAndContents('ttn_clipboard', textToCopy);
 			console.log('Copied:', textToCopy);
 			
 			// select it
@@ -151,36 +169,42 @@ var TTNInjection = (function() {
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
 			if ( this.selectedTextEqualsNextSearchString() ) {
-				
 				if ( e.character == 'G' && e.cmdKey ) {
 					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 					// make sure we're not now IN indicator div, if so find again
-					if ( this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName) ) {
+					if ( this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName) )
 						window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
-					}
 				
-					this.focusSelectedLink(this.nextSearchString);
-					this.displayInIndicator(this.nextSearchString, ' (⌘G)');
+					var color = this.focusSelectedLink(this.nextSearchString);
+					this.displayInIndicator(this.nextSearchString, ' (⌘G)', color);
 					event.preventDefault();
 					event.stopPropagation();
-					return false;
-				} else if ( e.character == 'C' && e.cmdKey && !e.ctrlKey && !e.shiftKey ) {
+				} else if ( e.character == 'I' && e.cmdKey && !e.ctrlKey && !e.shiftKey ) {
 					var href = this.mungeHref(document.activeElement.getAttribute('href')).join('');
-					var prefix = href[0];
-					var this_href = href[1];
-					
-					if (href) {
-						this.hijackCopyWith(href);
-						if ( this.indicator ) {
-							this.indicatorInner.setAttribute('color', 'blue');
-							this.displayInIndicator('URL copied', ' (⌘C)');
-						}
-					}
+					if (href) safari.self.tab.dispatchMessage('sendToInstapaper', { href: href });
+					event.preventDefault();
+					event.stopPropagation();
 				}
 			}
 		},
-		
+		sendToInstapaperCallback: function(data) {
+			if ( TTNInjection.indicator ) {
+				if (data.status == 201) { // success
+					TTNInjection.displayInIndicator('URL saved to Instapaper', ' (⌘I)', 'gray');
+				} else if (data.status == 403) { // wrong credentials
+					TTNInjection.displayInIndicator('Incorrect Instapaper credentials', ' (⌘I)', 'red');
+				} else {
+					TTNInjection.displayInIndicator('Sorry, Instapaper error', ' (⌘I)', 'red');
+				}
+			}
+		},
+		handleCopy: function(e) {
+			if ( this.selectedTextEqualsNextSearchString() ) {
+				this.hijackCopyWith(e.srcElement.href);
+				this.displayInIndicator('URL copied', ' (⌘C)', 'blue');
+			}
+		},
 		handleAlphaKeys: function(e) {
 			e.cmdKey = e.metaKey && !e.ctrlKey;
 			e.character = String.fromCharCode(e.keyCode);
@@ -210,9 +234,8 @@ var TTNInjection = (function() {
 							window.find(this.searchString, false, false, true, false, true, false);
 							
 							// focus the link so return key follows
-							this.focusSelectedLink(this.nextSearchString);
-							
-							this.displayInIndicator(this.nextSearchString);
+							var color = this.focusSelectedLink(this.nextSearchString);
+							this.displayInIndicator(this.nextSearchString, '', color);
 							
 							// check for nothing found
 							if ( !window.getSelection().rangeCount ) this.flashIndicator();
@@ -292,6 +315,10 @@ var TTNInjection = (function() {
 				TTNInjection.handleAlphaKeys(e);
 /*				safari.self.tab.dispatchMessage('handleAlphaKeys', new SafariEvent(e));*/
 			}, true);
+			
+			window.addEventListener('beforecopy', function(e) {
+				TTNInjection.handleCopy(e);
+			});
 		}
 	};
 })();
