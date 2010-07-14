@@ -75,8 +75,8 @@ var TTNInjection = (function() {
 		},
 		createHiddenElementWithTagNameAndContents: function(tagName, contents) {
 			var hiddenEl = document.createElement(tagName);
-			// hiddenEl.style.position = 'absolute';
-			// hiddenEl.style.top = '-1000px';
+			hiddenEl.style.position = 'absolute';
+			hiddenEl.style.top = '-1000px';
 			if (contents) hiddenEl.innerHTML = contents;
 			document.getElementsByTagName('body')[0].appendChild(hiddenEl);
 			return hiddenEl;
@@ -129,6 +129,7 @@ var TTNInjection = (function() {
 			return s.rangeCount && this.trim(String(s).toLowerCase()) == this.trim(this.nextSearchString.toLowerCase());
 		},
 		hijackCopyWith: function(textToCopy) {
+			
 			// get current selection
 			var s = window.getSelection();
 			var currentSelection = s.getRangeAt(0);
@@ -172,8 +173,9 @@ var TTNInjection = (function() {
 				if ( e.character == 'G' && e.cmdKey ) {
 					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
-					// make sure we're not now IN indicator div, if so find again
-					if ( this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName) )
+					// find again if we're now IN indicator div, or selected something invisible
+					// or selected something not in viewport (FIXME - NOT YET)
+					if ( (this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName)) || !s.anchorNode.parentNode.offsetHeight)
 						window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 					var color = this.focusSelectedLink(this.nextSearchString);
@@ -200,7 +202,7 @@ var TTNInjection = (function() {
 			}
 		},
 		handleCopy: function(e) {
-			if ( this.selectedTextEqualsNextSearchString() ) {
+			if ( document.activeElement && document.activeElement.tagName == 'A' && this.selectedTextEqualsNextSearchString() ) {
 				this.hijackCopyWith(e.srcElement.href);
 				this.displayInIndicator('URL copied', ' (⌘C)', 'blue');
 			}
@@ -318,7 +320,7 @@ var TTNInjection = (function() {
 			
 			window.addEventListener('beforecopy', function(e) {
 				TTNInjection.handleCopy(e);
-			});
+			}, true);
 		}
 	};
 })();
