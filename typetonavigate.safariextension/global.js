@@ -4,7 +4,7 @@ var TTNGlobal = (function() {
 		
 		persistentSettingsKeys: {
 			secure: ['instapaperUsername', 'instapaperPassword'],
-			unsecure: []
+			unsecure: ['disable_delete']
 		},
 		
 		init: function() {
@@ -45,6 +45,10 @@ var TTNGlobal = (function() {
 		getBlacklist: function(data, target) {
 			var blacklist = safari.extension.settings.getItem('blacklist');
 			target.page.dispatchMessage('getBlacklistCallback', blacklist);
+		},
+		getDisableDelete: function(data, target) {
+			var disable_delete = safari.extension.settings.getItem('disable_delete');
+			target.page.dispatchMessage('getDisableDeleteCallback', disable_delete);
 		},
 		sendToInstapaper: function(data, target) {
 			data = {

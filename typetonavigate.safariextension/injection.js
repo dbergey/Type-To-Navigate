@@ -15,6 +15,8 @@ var TTNInjection = (function() {
 		
 		blacklist: [],
 		
+		disable_delete: false,
+		
 		trim: function(str) { return String(str).match(/^\s*(.*?)\s*$/)[1]; },
 		fireEvent: function(el, eventName) {
 			var evt = document.createEvent("HTMLEvents");
@@ -220,6 +222,10 @@ var TTNInjection = (function() {
 				} else {
 					if ( this.searchString == '' && (e.keyCode == 32 || e.keyCode == 8) ) {
 						// do nothing, we allow the space bar and delete to fall through to scroll the page if we have no searchstring
+						if (this.disable_delete && e.keyCode == 8) {
+							e.preventDefault();
+							e.stopPropagation();
+						}
 					} else {
 						// append char
 						this.searchString += e.character;
@@ -287,6 +293,7 @@ var TTNInjection = (function() {
 			
 			// fetch blacklist
 			safari.self.tab.dispatchMessage('getBlacklist');
+			safari.self.tab.dispatchMessage('getDisableDelete');
 		},
 		getBlacklistCallback: function(blacklist) {
 			this.blacklist = blacklist.split(',');
@@ -301,6 +308,9 @@ var TTNInjection = (function() {
 			
 			// ok go ahead and do stuff
 			this.setUpEventsAndElements.apply(this);
+		},
+		getDisableDeleteCallback: function(disable_delete) {
+			this.disable_delete = disable_delete;
 		},
 		setUpEventsAndElements: function() {
 			// add indicator div to page
