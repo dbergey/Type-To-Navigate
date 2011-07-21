@@ -4,6 +4,8 @@
 <dict>
 	<key>Author</key>
 	<string>Daniel Bergey</string>
+	<key>Builder Version</key>
+	<string>7534.48.3</string>
 	<key>CFBundleDisplayName</key>
 	<string>Type-To-Navigate</string>
 	<key>CFBundleIdentifier</key>
@@ -11,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.4</string>
+	<string>1.0.5</string>
 	<key>CFBundleVersion</key>
-	<string>43</string>
+	<string>44</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
