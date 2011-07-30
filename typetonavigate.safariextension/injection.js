@@ -170,7 +170,7 @@ var TTNInjection = (function() {
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
 			if ( this.selectedTextEqualsNextSearchString() ) {
-				if ( e.character == 'G' && e.cmdKey ) {
+				if ( e.character == 'G' && e.cmdKey || e.keyCode == 9 ) {
 					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 					// find again if we're now IN indicator div, or selected something invisible
