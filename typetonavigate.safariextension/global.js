@@ -42,6 +42,13 @@ var TTNGlobal = (function() {
 		// handleNonAlphaKeys: function(data, target) {
 		// 	target.page.dispatchMessage('handleNonAlphaKeys', data);
 		// },
+		getGeneralSettings: function(data, target) {
+			var settings = {
+				'tabFindNext': safari.extension.settings.getItem('tabFindNext')
+			}
+			target.page.dispatchMessage('getGeneralSettingsCallback', settings);
+		},
+
 		getBlacklist: function(data, target) {
 			var blacklist = safari.extension.settings.getItem('blacklist');
 			target.page.dispatchMessage('getBlacklistCallback', blacklist);

@@ -18,6 +18,26 @@
 		<key>DefaultValue</key>
 		<false/>
 		<key>Key</key>
+		<string>general</string>
+		<key>Title</key>
+		<string>General</string>
+		<key>Type</key>
+		<string>Group</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
+		<string>tabFindNext</string>
+		<key>Title</key>
+		<string>Use TAB key to find next</string>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>Key</key>
 		<string>useInstapaper</string>
 		<key>Title</key>
 		<string>Instapaper Credentials</string>
