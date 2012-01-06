@@ -14,6 +14,7 @@ var TTNInjection = (function() {
 		indicatorFlashTimeout: null,
 		
 		blacklist: [],
+		settings: {},
 		
 		trim: function(str) { return String(str).match(/^\s*(.*?)\s*$/)[1]; },
 		fireEvent: function(el, eventName) {
@@ -167,10 +168,10 @@ var TTNInjection = (function() {
 				return;
 			}
 			
-			// if cmd-g and we have go to next
+			// if cmd-g or TAB and we have go to next
 			var s = window.getSelection();
-			if ( this.selectedTextEqualsNextSearchString() ) {
-				if ( e.character == 'G' && e.cmdKey ) {
+			if ( this.selectedTextEqualsNextSearchString() && this.nextSearchString != "" ) {
+				if ( e.character == 'G' && e.cmdKey || this.settings.tabFindNext && e.keyCode == 9 ) {
 					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
 				
 					// find again if we're now IN indicator div, or selected something invisible
@@ -285,9 +286,17 @@ var TTNInjection = (function() {
 				TTNInjection[msg.name](msg.message);
 			}, false);
 			
+			// get general settings
+			safari.self.tab.dispatchMessage('getGeneralSettings');
+
 			// fetch blacklist
 			safari.self.tab.dispatchMessage('getBlacklist');
 		},
+
+		getGeneralSettingsCallback: function(settings) {
+			this.settings = settings;
+		},
+
 		getBlacklistCallback: function(blacklist) {
 			this.blacklist = blacklist.split(',');
 
