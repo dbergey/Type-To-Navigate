@@ -4,15 +4,15 @@
 <array>
 	<dict>
 		<key>DefaultValue</key>
-		<string>*google.com/reader*,</string>
+		<string>*google.com/reader*, *reddit.com, github.com</string>
 		<key>Key</key>
 		<string>blacklist</string>
 		<key>Title</key>
-		<string>Site Blacklist</string>
+		<string>Site Blacklist (comma-separated, * = wildcard)</string>
 		<key>Titles</key>
 		<array/>
 		<key>Type</key>
-		<string>Hidden</string>
+		<string>TextField</string>
 	</dict>
 	<dict>
 		<key>DefaultValue</key>

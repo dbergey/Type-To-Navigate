@@ -291,13 +291,17 @@ var TTNInjection = (function() {
 		getBlacklistCallback: function(blacklist) {
 			this.blacklist = blacklist.split(',');
 
-			// bail if location.host matches anything in the blacklist
-			// for (href in this.blacklist) {
-			// 				if ( location.host.match(new RegExp('^'+this.blacklist[href].replace('*', '.*')+'$')) ) {
-			// 					console.log('Not engaging Type-To-Navigate due to blacklist.');
-			// 					return;
-			// 				}
-			// 			}
+			// bail if we match anything in the blacklist
+			for (var href in this.blacklist) {
+				// trim blacklist entry
+				this.blacklist[href] = this.blacklist[href].replace(/^\s|\s$/, '');
+				// match either host or host + url
+				if ( location.host.match(new RegExp('^'+this.blacklist[href].replace(/\*/g, '.*')+'$')) ||
+						(location.host+location.pathname).match(new RegExp('^'+this.blacklist[href].replace(/\*/g, '.*')+'$')) ) {
+					console.log('Type-To-Navigate: Not engaging due to blacklist.');
+					return;
+				}
+			}
 			
 			// ok go ahead and do stuff
 			this.setUpEventsAndElements.apply(this);
