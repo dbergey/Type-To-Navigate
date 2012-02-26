@@ -8,7 +8,7 @@
 		<key>Key</key>
 		<string>blacklist</string>
 		<key>Title</key>
-		<string>Site Blacklist (comma-separated, * = wildcard)</string>
+		<string>Site Blacklist</string>
 		<key>Titles</key>
 		<array/>
 		<key>Type</key>
