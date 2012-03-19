@@ -46,5 +46,19 @@
 		<key>Type</key>
 		<string>TextField</string>
 	</dict>
+	<dict>
+		<key>DefaultValue</key>
+		<false/>
+		<key>FalseValue</key>
+		<false/>
+		<key>Key</key>
+		<string>linksOnly</string>
+		<key>Title</key>
+		<string>Target Links Only</string>
+		<key>TrueValue</key>
+		<true/>
+		<key>Type</key>
+		<string>CheckBox</string>
+	</dict>
 </array>
 </plist>

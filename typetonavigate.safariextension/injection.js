@@ -14,6 +14,7 @@ var TTNInjection = (function() {
 		indicatorFlashTimeout: null,
 		
 		settings: {
+			linksOnly: false,
 			blacklist: '', // array version will be in this.blacklist
 		},
 		blacklist: [],
@@ -281,6 +282,10 @@ var TTNInjection = (function() {
 
 				// start out assuming it's good
 				validResult = true;
+
+				// DENIED if we only want links and it's not one
+				if (this.settings.linksOnly && el && el.tagName != 'A')
+					validResult = false;
 			}
 		},
 		mungeHref: function(href) {
