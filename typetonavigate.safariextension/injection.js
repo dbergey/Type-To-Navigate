@@ -171,12 +171,12 @@ var TTNInjection = (function() {
 			var s = window.getSelection();
 			if ( this.selectedTextEqualsNextSearchString() ) {
 				if ( e.character == 'G' && e.cmdKey ) {
-					window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
+					this.find(this.nextSearchString, e.shiftKey);
 				
 					// find again if we're now IN indicator div, or selected something invisible
 					// or selected something not in viewport (FIXME - NOT YET)
 					if ( (this.indicator && this.trim(s.anchorNode.parentNode.tagName) == this.trim(this.indicatorInner.tagName)) || !s.anchorNode.parentNode.offsetHeight)
-						window.find(this.nextSearchString, false, e.shiftKey, true, false, true, false);
+						this.find(this.nextSearchString, e.shiftKey);
 				
 					var color = this.focusSelectedLink(this.nextSearchString);
 					this.displayInIndicator(this.nextSearchString, ' (⌘G)', color);
@@ -233,7 +233,7 @@ var TTNInjection = (function() {
 							
 							// clear selection and find again
 							window.getSelection().removeAllRanges();
-							window.find(this.searchString, false, false, true, false, true, false);
+							this.find(this.searchString, false);
 							
 							// focus the link so return key follows
 							var color = this.focusSelectedLink(this.nextSearchString);
@@ -255,6 +255,27 @@ var TTNInjection = (function() {
 				}, 1000);
 				
 				// return false;
+			}
+		},
+		find: function(searchString, backwards)
+		{
+			var scrollPosition = {
+				top: document.body.scrollTop,
+				left: document.body.scrollPosition
+			};
+
+			// skip until we get something in our viewport (and a link if linksOnly == true)
+			var validResult = false;
+			var failSafe = 0;
+			while ( !validResult && failSafe < 500) {
+				failSafe++;
+				if (failSafe == 500) console.log('bailed');
+				window.find(searchString, false, backwards, true, false, true, false);
+				var s = window.getSelection();
+				var el = s && s.anchorNode && s.anchorNode.parentNode || false;
+
+				// start out assuming it's good
+				validResult = true;
 			}
 		},
 		mungeHref: function(href) {
