@@ -14,6 +14,7 @@ var TTNGlobal = (function() {
 			}, false);
 			
 			// bind settings change listeners
+			safari.extension.settings.addEventListener("change", this.getSettings, false);
 			safari.extension.settings.addEventListener("change", this.saveSettingsToLocalStorage, false);
 			safari.extension.secureSettings.addEventListener("change", this.saveSettingsToLocalStorage, false);
 			
@@ -42,9 +43,23 @@ var TTNGlobal = (function() {
 		// handleNonAlphaKeys: function(data, target) {
 		// 	target.page.dispatchMessage('handleNonAlphaKeys', data);
 		// },
-		getBlacklist: function(data, target) {
-			var blacklist = safari.extension.settings.getItem('blacklist');
-			target.page.dispatchMessage('getBlacklistCallback', blacklist);
+		getSettings: function(data, target) {
+			var settings = {
+				blacklist: safari.extension.settings.getItem('blacklist'),
+				linksOnly: safari.extension.settings.getItem('linksOnly')
+			};
+			if (target && target.page) {
+				// if the page asked, it's easy (because each page asks on load)
+				target.page.dispatchMessage('getSettingsCallback', settings);
+			} else {
+				// if a setting changed, we have to push it to all open tabs
+				var windows = safari.application.browserWindows;
+				for (var w in windows) {
+					for (var t in windows[w].tabs) {
+						windows[w].tabs[t].page.dispatchMessage('getSettingsCallback', settings);
+					}
+				}
+			}
 		},
 		sendToInstapaper: function(data, target) {
 			data = {

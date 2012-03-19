@@ -13,7 +13,12 @@ var TTNInjection = (function() {
 		indicatorFadeTimeout: null,
 		indicatorFlashTimeout: null,
 		
+		settings: {
+			blacklist: '', // array version will be in this.blacklist
+		},
 		blacklist: [],
+
+		setupAlready: false,
 		
 		trim: function(str) { return String(str).match(/^\s*(.*?)\s*$/)[1]; },
 		fireEvent: function(el, eventName) {
@@ -306,11 +311,14 @@ var TTNInjection = (function() {
 				TTNInjection[msg.name](msg.message);
 			}, false);
 			
-			// fetch blacklist
-			safari.self.tab.dispatchMessage('getBlacklist');
+			// fetch settings (inc. blacklist)
+			safari.self.tab.dispatchMessage('getSettings');
 		},
-		getBlacklistCallback: function(blacklist) {
-			this.blacklist = blacklist.split(',');
+		getSettingsCallback: function(settings) {
+			this.settings = settings;
+			this.blacklist = settings.blacklist.split(',');
+
+			if (this.setupAlready) return;
 
 			// bail if we match anything in the blacklist
 			for (var href in this.blacklist) {
@@ -326,6 +334,8 @@ var TTNInjection = (function() {
 			
 			// ok go ahead and do stuff
 			this.setUpEventsAndElements.apply(this);
+
+			this.setupAlready = true;
 		},
 		setUpEventsAndElements: function() {
 			// add indicator div to page
