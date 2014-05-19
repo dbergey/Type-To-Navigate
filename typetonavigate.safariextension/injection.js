@@ -148,11 +148,11 @@
 			// if cmd-g and we have go to next
 			var s = window.getSelection();
 			if ( e.character == 'G' && e.cmdKey && ext.selectedTextEqualsNextSearchString() ) {
-				window.find(ext.nextSearchString, false, e.shiftKey, true, false, false, false);
+				window.find(ext.nextSearchString, !!(ext.searchString.match(/[A-Z]/)), e.shiftKey, true, false, false, false);
 				
 				// make sure we're not now IN indicator div, if so find again
 				if ( ext.indicator && ext.trim(s.anchorNode.parentNode.id) == ext.trim(ext.indicatorInner.id) ) {
-					window.find(ext.nextSearchString, false, e.shiftKey, true, false, false, false);
+					window.find(ext.nextSearchString, !!(ext.searchString.match(/[A-Z]/)), e.shiftKey, true, false, false, false);
 				}
 				
 				ext.focusSelectedLink(ext.nextSearchString);
@@ -183,7 +183,7 @@
 					
 						// clear selection and find again
 						window.getSelection().removeAllRanges();
-						window.find(ext.searchString, false, false, true, false, false, false);
+						window.find(ext.searchString, !!(ext.searchString.match(/[A-Z]/)), false, true, false, false, false);
 						
 						// focus the link so return key follows
 						ext.focusSelectedLink(ext.nextSearchString);
