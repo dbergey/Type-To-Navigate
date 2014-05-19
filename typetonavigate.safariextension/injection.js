@@ -276,7 +276,7 @@ var TTNInjection = (function() {
 			while ( !validResult && failSafe < 500) {
 				failSafe++;
 				if (failSafe == 500) console.log('bailed');
-				window.find(searchString, false, backwards, true, false, true, false);
+				window.find(searchString, (searchString.match(/[A-Z]/) ? true : false), backwards, true, false, true, false);
 				var s = window.getSelection();
 				var el = s && s.anchorNode && s.anchorNode.parentNode || false;
 
